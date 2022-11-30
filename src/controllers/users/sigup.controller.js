@@ -1,9 +1,9 @@
-import expressAsyncHandler from "express-async-handler";
+import asyncHandler from "express-async-handler";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import { prismaInstance } from "../../prisma/index.js";
 
-export const signUp = async (req, res) => {
+export const signUp = asyncHandler(async (req, res) => {
   console.log(req);
   console.log(req.body);
 
@@ -18,7 +18,7 @@ export const signUp = async (req, res) => {
 
   // checking if user is already exist
   if (userFound) {
-    res.statusCode(403);
+    res.status(403);
     throw new Error("user already exist with the provided email");
   }
 
@@ -27,12 +27,12 @@ export const signUp = async (req, res) => {
   // creating a new user
   const newUser = await userModel.create({
     data: {
-      first_name: formData?.firstName,
-      last_name: formData?.lastName,
-      email: formData?.email,
-      phone_number: formData?.phoneNumber,
-      country: formData?.country,
-      password: await bcryptjs.hash(formData?.password, salt),
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      phone_number: formData.phoneNumber,
+      country: formData.country,
+      password: await bcryptjs.hash(formData.password, salt),
     },
   });
 
@@ -50,4 +50,4 @@ export const signUp = async (req, res) => {
     status: "success",
     token: jwt,
   });
-};
+});
