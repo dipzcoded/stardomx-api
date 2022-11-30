@@ -20,13 +20,22 @@ export const jwtExtractMiddleware = asyncHandler(async (req, res, next) => {
     res.status(403);
     throw new Error("token not passed");
   } else {
-    const decodedToken = jsonwebtoken.verify(token, process.env.JWT_SECRET);
-    req.user = await userModel.findUnique({
-      where: {
-        email: decodedToken.email,
-      },
-    });
+    try {
+      const decodedToken = jsonwebtoken.verify(token, process.env.JWT_SECRET);
+      req.user = await userModel.findUnique({
+        where: {
+          email: decodedToken.email,
+        },
+      });
 
-    next();
+      next();
+    } catch (error) {
+      if (
+        error.name === "JsonWebTokenError" ||
+        error.name === "TokenExpiredError"
+      ) {
+        throw new Error("invalid token");
+      }
+    }
   }
 });
