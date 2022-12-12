@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "build": "prisma generate && prisma migrate deploy",
+    "prisma:generate": "prisma generate",
+    "start": "node src/app.js"
   },
   "keywords": [],
   "author": "",
